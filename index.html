@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Liga Taparterias</title>
+<meta name="theme-color" content="#16223b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Taparterias">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%86%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: una columna; cabecera, tarjeta de "hoy" como acción principal, solapas en píldora y debajo la tabla activa. */
+:root{
+  --bg:#eef1f6; --surface:#ffffff; --ink:#16223b; --muted:#5d6a85; --line:#d5dbe7;
+  --accent:#16223b; --accent-ink:#ffffff; --gold:#e0a100; --gold-soft:#fbefc9; --soft:#e3e9f5; --bad:#c2372f;
+  --g-blue:#1f6fe0; --g-blue-soft:#dde9fc; --g-red:#d8362f; --g-red-soft:#fbe0de; --g-green:#1c8f5a; --g-green-soft:#d9f1e5;
+  --g-purple:#7a48d1; --g-purple-soft:#eae0fa; --g-orange:#d9730d; --g-orange-soft:#fbe6d0;
+  --display:"Bricolage Grotesque","Trebuchet MS",sans-serif; --body:"Figtree",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1524; --surface:#182037; --ink:#e9edf7; --muted:#97a3bf; --line:#2b3655;
+  --accent:#e9edf7; --accent-ink:#0f1524; --gold:#f2c230; --gold-soft:#3d3310; --soft:#222c49; --bad:#ff8a80;
+  --g-blue:#6ea6ff; --g-blue-soft:#17294d; --g-red:#ff7a70; --g-red-soft:#451b1a; --g-green:#5fd39b; --g-green-soft:#143626;
+  --g-purple:#b592ff; --g-purple-soft:#2c2050; --g-orange:#ffa554; --g-orange-soft:#44290f; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f1524; --surface:#182037; --ink:#e9edf7; --muted:#97a3bf; --line:#2b3655;
+  --accent:#e9edf7; --accent-ink:#0f1524; --gold:#f2c230; --gold-soft:#3d3310; --soft:#222c49; --bad:#ff8a80;
+  --g-blue:#6ea6ff; --g-blue-soft:#17294d; --g-red:#ff7a70; --g-red-soft:#451b1a; --g-green:#5fd39b; --g-green-soft:#143626;
+  --g-purple:#b592ff; --g-purple-soft:#2c2050; --g-orange:#ffa554; --g-orange-soft:#44290f; color-scheme:dark }
+.c-blue{--gc:var(--g-blue);--gs:var(--g-blue-soft)} .c-red{--gc:var(--g-red);--gs:var(--g-red-soft)} .c-green{--gc:var(--g-green);--gs:var(--g-green-soft)}
+.c-purple{--gc:var(--g-purple);--gs:var(--g-purple-soft)} .c-orange{--gc:var(--g-orange);--gs:var(--g-orange-soft)}
+*{box-sizing:border-box}
+html{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
+h1{font-family:var(--display);font-weight:800;font-size:2rem;line-height:1;margin:0;letter-spacing:-.02em}
+h2{font-family:var(--display);font-weight:800;font-size:1.2rem;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:.87rem}
+.me{font-size:.9rem;color:var(--muted);margin-top:4px}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;font-weight:600}
+button:hover{border-color:var(--ink)}
+button:disabled{opacity:.5;cursor:default}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.link{border:0;background:none;padding:0;color:inherit;text-decoration:underline;border-radius:4px}
+button.danger{color:var(--bad)}
+:focus-visible{outline:2px solid var(--g-blue);outline-offset:2px}
+input,select{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:9px 12px;min-width:0}
+.tabs{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding-block:2px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;white-space:nowrap;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.month{display:flex;align-items:center;gap:8px}
+.month b{font-family:var(--display);font-size:1.1rem;min-width:9.5em;text-align:center}
+main{display:flex;flex-direction:column;gap:16px}
+.month button{padding:6px 14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.cta{width:100%;padding:16px;font-size:1.1rem;font-family:var(--display);font-weight:800}
+.today{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.today .lbl{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.today .tot{font-family:var(--display);font-weight:800;font-size:1.7rem;line-height:1;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.gchip{background:var(--gs);color:var(--gc);border-radius:999px;padding:5px 12px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.gchip b{color:var(--ink);margin-left:4px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+th.g{color:var(--gc)}
+th:first-child,td:first-child{text-align:left}
+td.name,th.name{text-align:left}
+tr:last-child td{border-bottom:0}
+td.tot{font-weight:700;font-size:1.05rem}
+tr.lead td{background:var(--gold-soft)}
+tr.mine td.name{font-weight:700}
+.pos{display:inline-block;width:1.7em;height:1.7em;line-height:1.7em;text-align:center;border-radius:50%;background:var(--soft);font-weight:700;font-size:.85rem}
+tr.lead .pos{background:var(--gold);color:#1b1500}
+.cell{border:0;background:none;padding:2px 8px;font-weight:500;min-width:3em;text-align:right}
+.cell:hover{background:var(--soft)}
+.cell.empty{color:var(--muted);font-weight:400}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.field{display:flex;flex-direction:column;gap:4px;flex:1 1 150px;min-width:0}
+.field label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.field.g label{color:var(--gc);font-size:.9rem;text-transform:none;letter-spacing:0}
+.field.g input{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums;border:2px solid var(--gc);background:var(--gs)}
+.note{background:var(--soft);border-radius:14px;padding:10px 14px;font-size:.9rem}
+.note.warn{background:var(--gold-soft)}
+.item{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.item:last-of-type{border-bottom:0}
+.item .grow{flex:1 1 140px;min-width:0}
+.tag{font-size:.72rem;background:var(--soft);border-radius:99px;padding:2px 8px;color:var(--muted);font-weight:600}
+#today{display:flex;flex-direction:column;gap:12px}
+.play{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.play .q{font-family:var(--display);font-weight:800;font-size:1.05rem}
+.gbtns{display:flex;flex-wrap:wrap;gap:10px}
+a.gbtn{flex:1 1 160px;display:flex;align-items:center;justify-content:space-between;gap:8px;text-decoration:none;background:var(--gc);color:var(--surface);border-radius:999px;padding:14px 20px;font-weight:700;font-size:1.05rem}
+a.gbtn:hover{filter:brightness(1.08)}
+a.gbtn .ok{font-size:.8rem;font-weight:600;opacity:.9}
+.gbtn.nolink{flex:1 1 160px;background:var(--gs);color:var(--gc);border-radius:999px;padding:14px 20px;font-weight:700}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-weight:600;max-width:calc(100% - 32px)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Liga Taparterias</h1>
+      <div class="me" id="me"></div>
+    </div>
+    <div class="month" id="monthNav">
+      <button data-act="prev" aria-label="Mes anterior">‹</button>
+      <b id="monthLbl"></b>
+      <button data-act="next" aria-label="Mes siguiente">›</button>
+    </div>
+  </header>
+  <div id="banner"></div>
+  <div id="today"></div>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="view"><div class="panel">Cargando la liga…</div></main>
+</div>
+<div id="toast" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

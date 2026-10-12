@@ -2,8 +2,8 @@
    CONFIGURACIÓN — pegá acá los datos de tu proyecto de Supabase
    (Supabase → Project Settings → API: "Project URL" y la clave "anon" o "publishable")
    ===================================================================== */
-const SUPABASE_URL = https://efiljdsoypdoyuqcefuf.supabase.co/rest/v1/;
-const SUPABASE_KEY = sb_publishable_kJYcDfSVdp8cOUNvhlUcbw_0E34YTG7;
+const SUPABASE_URL = 'https://efiljdsoypdoyuqcefuf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_kJYcDfSVdp8cOUNvhlUcbw_0E34YTG7';
 
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
